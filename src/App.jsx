@@ -142,13 +142,14 @@ const genAI = new GoogleGenerativeAI(getApiKey(), {
 });
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCFpQskmYqzF6YMWtzyw8yaLEPNFTwQcz0",
-  authDomain: "networkprep-4e66a.firebaseapp.com",
-  projectId: "networkprep-4e66a",
-  storageBucket: "networkprep-4e66a.firebasestorage.app",
-  messagingSenderId: "924055263229",
-  appId: "1:924055263229:web:b535c6cfce9783ef12ab94"
-};
+    apiKey: "AIzaSyDYws4YK1e7hfVWzPPrhpSWjP-1bXhgyO4",
+    authDomain: "spelt-game.firebaseapp.com",
+    projectId: "spelt-game",
+    storageBucket: "spelt-game.firebasestorage.app",
+    messagingSenderId: "926609416945",
+    appId: "1:926609416945:web:cf915fa1ba7318cb9ebf50",
+    measurementId: "G-QS1GLRQX82"
+  };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
