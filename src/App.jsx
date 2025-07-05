@@ -203,15 +203,26 @@ const App = () => {
 
   const addToLeaderboard = async (username, score) => {
     try {
-      await addDoc(collection(db, "leaderboard"), {
+      console.log('Adding to leaderboard:', { username, score });
+      console.log('Firestore db instance:', db);
+      console.log('Collection reference:', collection(db, "leaderboard"));
+      
+      const docRef = await addDoc(collection(db, "leaderboard"), {
         username: username,
         score: score,
         timestamp: new Date()
       });
+      
+      console.log('Document written with ID:', docRef.id);
       await loadLeaderboard(); // Reload leaderboard after adding new score
-      setScoreSubmitted(true);
     } catch (error) {
       console.error("Error adding to leaderboard:", error);
+      console.error("Error details:", {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
+      throw error; // Re-throw to be caught by handleSubmitScore
     }
   };
 
@@ -407,7 +418,15 @@ const App = () => {
 
   const handleSubmitScore = async () => {
     if (user && !scoreSubmitted) {
-      await addToLeaderboard(user.displayName, finalScore);
+      try {
+        console.log('Attempting to submit score:', { username: user.displayName, score: finalScore });
+        await addToLeaderboard(user.displayName, finalScore);
+        setScoreSubmitted(true);
+        console.log('Score submitted successfully');
+      } catch (error) {
+        console.error('Error submitting score:', error);
+        alert('Failed to submit score. Please try again.');
+      }
     }
   };
 
