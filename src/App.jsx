@@ -404,7 +404,7 @@ const App = () => {
     }
   };
 
-  const submitScore = async () => {
+  const handleSubmitScore = async () => {
     if (user && !scoreSubmitted) {
       await addToLeaderboard(user.displayName, finalScore);
     }
@@ -424,11 +424,11 @@ const App = () => {
       {user && (
         <header className="bg-gray-100 border-b-2 border-black p-4">
           <div className="max-w-4xl mx-auto flex justify-between items-center">
-            <div className="text-sm text-gray-600">
+            <div className="text-lg text-gray-600">
               {renderArtisanText(`Welcome, ${user.displayName}`)}
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-orange-600 font-bold">
+              <span className="text-lg text-orange-600 font-bold">
                 {renderArtisanText(`Score: ${score}`)}
               </span>
               <button 
@@ -473,22 +473,16 @@ const App = () => {
               </div>
               {!scoreSubmitted ? (
                 <button 
-                  onClick={submitScore}
-                  className="px-8 py-4 rounded-none bg-green-600 text-white text-xl font-bold border-2 border-black shadow-lg hover:bg-green-700 transition-colors duration-300"
+                  onClick={handleSubmitScore}
+                  className="mt-4 px-8 py-4 rounded-none bg-orange-600 text-white text-xl font-bold border-2 border-black shadow-lg hover:bg-orange-700 transition-colors duration-300"
                 >
-                  {renderArtisanText("Submit Score to Leaderboard")}
+                  {renderArtisanText("Submit Score")}
                 </button>
               ) : (
                 <div className="text-green-600 text-xl font-bold">
                   {renderArtisanText("Score submitted to leaderboard!")}
                 </div>
               )}
-              <button 
-                onClick={startGame}
-                className="mt-4 px-8 py-4 rounded-none bg-orange-600 text-white text-xl font-bold border-2 border-black shadow-lg hover:bg-orange-700 transition-colors duration-300"
-              >
-                {renderArtisanText("Play Again")}
-              </button>
             </div>
           </div>
         ) : !gameMode ? (
