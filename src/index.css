@@ -2,15 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Acknowledgement';
+  src: url('./assets/Acknowledgement.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Acknowledgement', serif;
   background: white;
   min-height: 100vh;
   margin: 0;
 }
 
 .font-serif {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Acknowledgement', serif;
 }
 
 @keyframes blink {
@@ -20,4 +27,196 @@ body {
   51%, 100% {
     opacity: 0;
   }
+}
+
+/* Typing animation keyframes */
+@keyframes letterSlam {
+  0% {
+    transform: translateY(-20px) scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(5px) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes letterLand {
+  0% {
+    transform: translateY(-10px) scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Title animation - zoom from huge to normal size */
+@keyframes titleLetterZoom {
+  0% {
+    transform: scale(20);
+    visibility: hidden;
+  }
+  10% {
+    transform: scale(20);
+    visibility: visible;
+  }
+  40% {
+    transform: scale(20);
+    visibility: visible;
+  }
+  80% {
+    transform: scale(1);
+    visibility: visible;
+  }
+  100% {
+    transform: scale(1);
+    visibility: visible;
+  }
+}
+
+/* Custom input styling - completely transparent */
+.custom-typing-input {
+  background: transparent !important;
+  position: relative;
+  z-index: 10;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.custom-typing-input:focus-within {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Ensure placeholder is properly positioned */
+.custom-typing-input .placeholder {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  font-size: 1.875rem;
+}
+
+/* Cool typing animation for input letters */
+@keyframes inputLetterSlam {
+  0% {
+    transform: scale(3) translateY(-20px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) translateY(5px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes inputLetterLand {
+  0% {
+    transform: scale(3) translateY(-20px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) translateY(5px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Newspaper styling */
+.newspaper-bg {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+}
+
+.newspaper-texture {
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.02) 2px,
+      rgba(0, 0, 0, 0.02) 4px
+    );
+}
+
+.newspaper-border {
+  border: 2px solid #2c3e50;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.newspaper-header {
+  background: linear-gradient(180deg, #34495e 0%, #2c3e50 100%);
+  border-bottom: 3px solid #1a252f;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Typing animation classes */
+.typing-letter {
+  display: inline-block;
+  animation: letterSlam 0.3s ease-out forwards;
+  transform-origin: center bottom;
+}
+
+.typing-letter.landed {
+  animation: letterLand 0.2s ease-out forwards;
+}
+
+/* Title animation class - zoom in from off-screen */
+.title-letter {
+  display: inline-block;
+  animation: titleLetterZoom 2s ease-out forwards;
+  transform-origin: center center;
+  visibility: hidden;
+  z-index: 9999;
+  position: relative;
+}
+
+.title-letter.visible {
+  visibility: visible;
+}
+
+.title-letter.invisible {
+  visibility: hidden;
+}
+
+/* Enhanced newspaper elements */
+.newspaper-title {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.1em;
+}
+
+.newspaper-subtitle {
+  font-style: italic;
+  color: #6c757d;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.newspaper-section {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 } 
