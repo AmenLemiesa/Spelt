@@ -1,4 +1,4 @@
-# Spelt
+# [Spelt](https://amenlemiesa.github.io/Spelt/)
 
 ![Spelt Screenshot](src/assets/spelt_ss.png)
 
