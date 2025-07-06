@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, Timestamp, where } from "firebase/firestore";
-import { zonedTimeToUtc } from 'date-fns-tz';
+import { fromZonedTime } from 'date-fns-tz';
 
 // Import audio files
 import audioAccommodate from './assets/spelt_accommodate.mp3';
@@ -120,18 +119,6 @@ function renderArtisanText(text) {
     </span>
   );
 }
-
-// Initialize Gemini with fallback for development
-const getApiKey = () => {
-    if (import.meta.env.DEV) {
-        return import.meta.env.VITE_GEMINI_API_KEY;
-    }
-    return window.__GEMINI_API_KEY__;
-};
-
-const genAI = new GoogleGenerativeAI(getApiKey(), {
-    apiVersion: 'v1beta'
-});
 
 const firebaseConfig = {
     apiKey: "AIzaSyDYws4YK1e7hfVWzPPrhpSWjP-1bXhgyO4",
@@ -287,7 +274,7 @@ const App = () => {
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
-      const etMidnight = zonedTimeToUtc(`${year}-${month}-${day} 00:00:00`, timeZone);
+      const etMidnight = fromZonedTime(`${year}-${month}-${day} 00:00:00`, timeZone);
 
       const q = query(
         collection(db, "leaderboard"),
@@ -324,7 +311,7 @@ const App = () => {
       const year = now.getFullYear();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
-      const etMidnight = zonedTimeToUtc(`${year}-${month}-${day} 00:00:00`, timeZone);
+      const etMidnight = fromZonedTime(`${year}-${month}-${day} 00:00:00`, timeZone);
 
       const q = query(
         collection(db, "leaderboard"),
