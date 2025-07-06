@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, deleteDoc, Timestamp, where } from "firebase/firestore";
+import { zonedTimeToUtc } from 'date-fns-tz';
 
 // Import audio files
 import audioAccommodate from './assets/spelt_accommodate.mp3';
@@ -280,37 +281,34 @@ const App = () => {
 
   const loadLeaderboard = async () => {
     try {
-      // Get entries from the last 24 hours
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      
+      // Calculate ET midnight for today
+      const now = new Date();
+      const timeZone = 'America/New_York';
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const etMidnight = zonedTimeToUtc(`${year}-${month}-${day} 00:00:00`, timeZone);
+
       const q = query(
-        collection(db, "leaderboard"), 
+        collection(db, "leaderboard"),
+        where("timestamp", ">", Timestamp.fromDate(etMidnight)),
         orderBy("timestamp", "desc"),
-        limit(50) // Get more entries to filter client-side
+        limit(50)
       );
       const querySnapshot = await getDocs(q);
       const leaderboardData = [];
-      
       querySnapshot.forEach((doc) => {
         const data = doc.data();
-        const entryTime = data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
-        
-        // Only include entries from the last 24 hours
-        if (entryTime > yesterday) {
-          leaderboardData.push({ 
-            id: doc.id, 
-            ...data,
-            timestamp: entryTime
-          });
-        }
+        leaderboardData.push({ 
+          id: doc.id, 
+          ...data,
+          timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp)
+        });
       });
-      
       // Sort by score (descending) and take top 3
       const sortedData = leaderboardData
         .sort((a, b) => b.score - a.score)
         .slice(0, 3);
-      
       setLeaderboard(sortedData);
       setLastLeaderboardUpdate(new Date());
     } catch (error) {
@@ -320,26 +318,24 @@ const App = () => {
 
   const cleanupOldEntries = async () => {
     try {
-      // Delete entries older than 24 hours
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      
+      // Calculate ET midnight for today
+      const now = new Date();
+      const timeZone = 'America/New_York';
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const etMidnight = zonedTimeToUtc(`${year}-${month}-${day} 00:00:00`, timeZone);
+
       const q = query(
         collection(db, "leaderboard"),
+        where("timestamp", "<=", Timestamp.fromDate(etMidnight)),
         orderBy("timestamp", "asc")
       );
       const querySnapshot = await getDocs(q);
-      
       const deletePromises = [];
       querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        const entryTime = data.timestamp?.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
-        
-        if (entryTime <= yesterday) {
-          deletePromises.push(deleteDoc(doc.ref));
-        }
+        deletePromises.push(deleteDoc(doc.ref));
       });
-      
       if (deletePromises.length > 0) {
         await Promise.all(deletePromises);
         console.log(`Cleaned up ${deletePromises.length} old leaderboard entries`);
@@ -354,13 +350,11 @@ const App = () => {
       console.log('Adding to leaderboard:', { username, score });
       console.log('Firestore db instance:', db);
       console.log('Collection reference:', collection(db, "leaderboard"));
-      
       const docRef = await addDoc(collection(db, "leaderboard"), {
         username: username,
         score: score,
-        timestamp: new Date()
+        timestamp: Timestamp.now()
       });
-      
       console.log('Document written with ID:', docRef.id);
       await loadLeaderboard(); // Reload leaderboard after adding new score
     } catch (error) {
